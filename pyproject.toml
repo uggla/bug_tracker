@@ -1,0 +1,7 @@
+[project]
+name = "bug-tracker"
+version = "0.1.0"
+description = "A simple script to collect new bugs for openstack nova"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = ["launchpadlib>=2.1.0"]
