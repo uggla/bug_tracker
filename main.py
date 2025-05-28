@@ -26,15 +26,14 @@ def create_rrd():
         return
     subprocess.run([
         "rrdtool", "create", RRD_FILE,
-        "--step", "86400",
-        "DS:bugs:GAUGE:172800:0:10000",
-        "RRA:AVERAGE:0.5:1:365"
+        "--step", "3600",                          # 1 point/hour
+        "DS:bugs:GAUGE:172800:0:10000",            # GAUGE, max 2 days gap
+        "RRA:AVERAGE:0.5:1:8760"                   # 1 year of hourly data
     ], check=True)
 
 def update_rrd(count):
-    timestamp = int(time.time())
     subprocess.run([
-        "rrdtool", "update", RRD_FILE, f"{timestamp}:{count}"
+        "rrdtool", "update", RRD_FILE, f"N:{count}"
     ], check=True)
 
 def generate_graph():
