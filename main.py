@@ -13,11 +13,56 @@ HTML_FILE = os.path.join(HTML_DIR, "index.html")
 CACHE_DIR = os.path.expanduser("~/.launchpadlib/cache")
 
 
-def get_bug_count():
+def get_bug_data():
     lp = Launchpad.login_anonymously("bug-stats", "production", CACHE_DIR)
     project = lp.projects[PROJECT]
-    tasks = project.searchTasks(status=["New"])
-    return len(tasks)
+    tasks = project.searchTasks(
+        status=["New"]
+    )
+    bugs = []
+
+    for task in tasks:
+        bug = task.bug
+        bugs.append(
+            {
+                "id": bug.id,
+                "title": bug.title,
+                "link": bug.web_link,
+                "date": bug.date_created,
+                "heat": bug.heat,
+            }
+        )
+
+
+    filtered_bugs = sorted(bugs, key=lambda x: x["date"], reverse=True)[:5]
+
+    latest_bugs = []
+    for bug in filtered_bugs:
+        latest_bugs.append(
+            {
+                "id": bug["id"],
+                "title": bug["title"],
+                "link": bug["link"],
+                "date": str(bug["date"])[:10],
+                "heat": bug["heat"],
+            }
+        )
+
+    filtered_bugs = sorted(bugs, key=lambda x: x["heat"], reverse=True)[:2]
+
+    hotest_bugs = []
+    for bug in filtered_bugs:
+        hotest_bugs.append(
+            {
+                "id": bug["id"],
+                "title": bug["title"],
+                "link": bug["link"],
+                "date": str(bug["date"])[:10],
+                "heat": bug["heat"],
+            }
+        )
+
+    return len(tasks), latest_bugs, hotest_bugs
 
 
 def ensure_directories():
@@ -48,36 +93,59 @@ def update_rrd(count):
 
 
 def generate_graph():
-    subprocess.run([
-        "rrdtool", "graph", os.path.join(HTML_DIR, "bugs_new_30d.png"),
-        "--start", "-30d",
-        "--title", f"New Bugs (Last 30 Days)",
-        "--vertical-label", "Bugs",
-        "--width", "800",
-        "--height", "300",
-        f"DEF:bugs={RRD_FILE}:bugs:AVERAGE",
-        "LINE2:bugs#FF0000:New Bugs"
-    ], check=True)
+    subprocess.run(
+        [
+            "rrdtool",
+            "graph",
+            os.path.join(HTML_DIR, "bugs_new_30d.png"),
+            "--start",
+            "-30d",
+            "--title",
+            f"New Bugs (Last 30 Days)",
+            "--vertical-label",
+            "Bugs",
+            "--width",
+            "800",
+            "--height",
+            "300",
+            f"DEF:bugs={RRD_FILE}:bugs:AVERAGE",
+            "LINE2:bugs#FF0000:New Bugs",
+        ],
+        check=True,
+    )
 
-    subprocess.run([
-        "rrdtool", "graph", os.path.join(HTML_DIR, "bugs_new_6mo.png"),
-        "--start", "-180d",
-        "--title", f"New Bugs (Last 6 Months)",
-        "--vertical-label", "Bugs",
-        "--width", "800",
-        "--height", "300",
-        f"DEF:bugs={RRD_FILE}:bugs:AVERAGE",
-        "LINE2:bugs#0000FF:New Bugs"
-    ], check=True)
+    subprocess.run(
+        [
+            "rrdtool",
+            "graph",
+            os.path.join(HTML_DIR, "bugs_new_6mo.png"),
+            "--start",
+            "-180d",
+            "--title",
+            f"New Bugs (Last 6 Months)",
+            "--vertical-label",
+            "Bugs",
+            "--width",
+            "800",
+            "--height",
+            "300",
+            f"DEF:bugs={RRD_FILE}:bugs:AVERAGE",
+            "LINE2:bugs#0000FF:New Bugs",
+        ],
+        check=True,
+    )
 
 
-def generate_html():
+def generate_html(latest_bugs, hotest_bugs):
     env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
     template = env.get_template("index.html.j2")
+
     html_content = template.render(
         project=PROJECT,
         graph_30d="bugs_new_30d.png",
-        graph_6mo="bugs_new_6mo.png"
+        graph_6mo="bugs_new_6mo.png",
+        latest_bugs=latest_bugs,
+        hotest_bugs=hotest_bugs,
     )
     with open(HTML_FILE, "w") as f:
         f.write(html_content)
@@ -86,11 +154,11 @@ def generate_html():
 def main():
     ensure_directories()
     create_rrd()
-    count = get_bug_count()
+    count, latest_bugs, hotest_bugs = get_bug_data()
     print(f"New bugs for project '{PROJECT}': {count}")
     update_rrd(count)
     generate_graph()
-    generate_html()
+    generate_html(latest_bugs, hotest_bugs)
     print(f"Dashboard generated: {HTML_FILE}")
 
 

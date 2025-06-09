@@ -72,6 +72,7 @@
   <main>
     <h1>🪲 Launchpad new bugs for {{ project }} project</h1>
     <p>Monitoring status for new bugs submitted in <code>{{ project }}</code>.</p>
+
     <div class="calendar_container">
       <div class="calendar">
         <div class="month" id="month">---</div>
@@ -86,6 +87,51 @@
 
     <h2>🕰️ Last 6 Months</h2>
     <img src="{{ graph_6mo }}" alt="New Bugs Graph (6 months)">
+
+    <h2>📝 Latest New Bugs</h2>
+    <table role="grid">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Date</th>
+          <th>Heat</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for bug in latest_bugs %}
+        <tr>
+          <td><a href="{{ bug.link }}" target="_blank">#{{ bug.id }}</a></td>
+          <td>{{ bug.title }}</td>
+          <td>{{ bug.date }}</td>
+          <td>{{ bug.heat }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <h2>📝 Hotest New Bugs</h2>
+    <table role="grid">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Date</th>
+          <th>Heat</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for bug in hotest_bugs %}
+        <tr>
+          <td><a href="{{ bug.link }}" target="_blank">#{{ bug.id }}</a></td>
+          <td>{{ bug.title }}</td>
+          <td>{{ bug.date }}</td>
+          <td>{{ bug.heat }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
 
     <footer>
       <small>Generated with <code>rrdtool</code> — Styled by <a href="https://picocss.com/" target="_blank">Pico.css</a></small>
