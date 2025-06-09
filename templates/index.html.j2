@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <title>Launchpad new bugs for {{ project }} project</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@1.5.10/css/pico.min.css">
+  <style>
+    :root {
+      --pico-background-color: #FFDD91;
+      --pico-card-background-color: #91FFDD;
+    }
+
+    html {
+      background-color: var(--pico-background-color);
+    }
+
+    main {
+      max-width: 800px;
+      margin: 2rem auto;
+      text-align: center;
+    }
+
+    img {
+      width: 100%;
+      height: auto;
+      border: 1px solid #ccc;
+      background: var(--pico-card-background-color);
+      padding: 0.5rem;
+    }
+
+    .calendar_container {
+      display: flex;
+      align-items: center; /* Aligns icon and text vertically */
+      gap: 0.5em;
+      justify-content: center; /* Optional: centers the group */
+    }
+
+    .calendar {
+      width: 32px;
+      height: 32px;
+      background-image: url('svg/calendar.svg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 50px;
+    }
+
+    .date {
+      font-size: 0.7em;
+      text-align: center;
+      color: #000000;
+      margin-bottom: 1px;
+    }
+
+    .month {
+      margin-top: 1px;
+      text-align: center;
+      font-size: 0.3em;
+      color: #FFFFFF;
+    }
+
+  </style>
+
+</head>
+<body>
+  <main>
+    <h1>🪲 Launchpad new bugs for {{ project }} project</h1>
+    <p>Monitoring status for new bugs submitted in <code>{{ project }}</code>.</p>
+    <div class="calendar_container">
+      <div class="calendar">
+        <div class="month" id="month">---</div>
+        <div class="date" id="date">--</div>
+      </div>
+      <h2>
+      Last 30 Days
+      </h2>
+    </div>
+    Last 30 Days
+    <img src="{{ graph_30d }}" alt="New Bugs Graph (30 days)">
+
+    <h2>🕰️ Last 6 Months</h2>
+    <img src="{{ graph_6mo }}" alt="New Bugs Graph (6 months)">
+
+    <footer>
+      <small>Generated with <code>rrdtool</code> — Styled by <a href="https://picocss.com/" target="_blank">Pico.css</a></small>
+    </footer>
+  </main>
+
+
+  <script>
+    const now = new Date();
+    document.getElementById('date').textContent = String(now.getDate()).padStart(2, '0');
+    document.getElementById('month').textContent = now.toLocaleString('default', { month: 'short' });
+  </script>
+</body>
+</html>

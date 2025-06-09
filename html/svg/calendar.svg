@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+
+<svg
+   width="800px"
+   height="800px"
+   viewBox="0 0 128 128"
+   aria-hidden="true"
+   role="img"
+   class="iconify iconify--noto"
+   preserveAspectRatio="xMidYMid meet"
+   version="1.1"
+   id="svg18"
+   sodipodi:docname="calendar.svg"
+   inkscape:version="1.4.2 (ebf0e940d0, 2025-05-08)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs18" />
+  <sodipodi:namedview
+     id="namedview18"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="1.0275"
+     inkscape:cx="400.48662"
+     inkscape:cy="400"
+     inkscape:window-width="1920"
+     inkscape:window-height="1011"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg18" />
+  <path
+     d="M6.81 45.78v64.74c0 3.12 2.9 5.21 6.32 7.61c3.9 2.74 8.48 5.25 10.17 5.25l93.55.62c2.4 0 4.34-2.94 4.34-5.34V45.78H6.81z"
+     fill="#bdbdbd"
+     id="path1" />
+  <linearGradient
+     id="IconifyId17ecdb2904d178eab21000"
+     gradientUnits="userSpaceOnUse"
+     x1="117.05"
+     y1="74.704"
+     x2="117.05"
+     y2="114.633">
+    <stop
+       offset=".337"
+       stop-color="#616161"
+       id="stop1" />
+    <stop
+       offset="1"
+       stop-color="#616161"
+       stop-opacity="0"
+       id="stop2" />
+  </linearGradient>
+  <path
+     opacity=".29"
+     fill="url(#IconifyId17ecdb2904d178eab21000)"
+     d="M121.19 118.66l-8.28-8.51V43.92l8.28-.19z"
+     id="path2" />
+  <path
+     d="M121.19 51.32l-6.46-4.05L104.62 4h5.44c9.65 0 11.13 5.57 11.13 7.47v39.85z"
+     fill="#c62828"
+     id="path3" />
+  <path
+     d="M9.75 45.78v62.68c0 2.7 2.19 4.88 4.88 4.88h94.85c2.7 0 5.22-2.01 5.22-4.71V45.78H9.75z"
+     fill="#fafafa"
+     id="path4" />
+  <path
+     d="M114.73 47.27H6.81V9.75C6.81 6.57 9.38 4 12.56 4h96.59c3.19 0 5.77 2.59 5.75 5.78l-.17 37.49z"
+     fill="#f44336"
+     id="path5" />
+  <g
+     fill="#ffffff"
+     id="g9" />
+  <path
+     opacity=".29"
+     fill="#616161"
+     d="M114.7 52.24l-104.95.11v-5.08H114.7z"
+     id="path12" />
+  <circle
+     cx="22.8"
+     cy="17.74"
+     r="7.1"
+     fill="#606060"
+     id="circle12" />
+  <circle
+     cx="20.44"
+     cy="15.39"
+     r="7.1"
+     fill="#94d1e0"
+     id="circle13" />
+  <path
+     d="M21.05 12.45c-.16.85-.7 1.57-1.32 2.18c-.74.72-1.61 1.32-2.59 1.65c-.58.2-1.25.28-1.76-.06c-1.41-.95-.28-4.52.79-5.47c1.63-1.44 5.44-1.17 4.88 1.7z"
+     fill="#c9eff2"
+     id="path13" />
+  <g
+     id="g15">
+    <circle
+       cx="101.3"
+       cy="17.74"
+       r="7.1"
+       fill="#606060"
+       id="circle14" />
+    <circle
+       cx="98.95"
+       cy="15.39"
+       r="7.1"
+       fill="#94d1e0"
+       id="circle15" />
+    <path
+       d="M99.56 12.45c-.16.85-.7 1.57-1.32 2.18c-.74.72-1.61 1.32-2.59 1.65c-.58.2-1.25.28-1.76-.06c-1.41-.95-.28-4.52.79-5.47c1.63-1.44 5.43-1.17 4.88 1.7z"
+       fill="#c9eff2"
+       id="path15" />
+  </g>
+  <g
+     id="g16">
+    <path
+       d="M103.71 118.74c-3.18.39-6.36.56-9.54.84c-3.18.2-6.36.38-9.54.5c-3.18.16-6.36.19-9.54.29l-9.54.09l-9.54-.1c-3.18-.09-6.36-.13-9.54-.29c-3.18-.12-6.36-.3-9.54-.5c-3.18-.28-6.36-.45-9.54-.84v-.2l38.15-.1l38.15.1v.21z"
+       fill="#757575"
+       id="path16" />
+  </g>
+  <path
+     d="M84.5 113.34h25.32c2.7 0 4.88-2.19 4.88-4.88V90.03s-5.5 7.64-13.83 13.92s-16.37 9.39-16.37 9.39z"
+     fill="#757575"
+     id="path17" />
+  <path
+     d="M107.17 104.31c7.72-9.09 7.53-14.27 7.53-14.27s-2.23 3.14-9.24 3.85c-2.47.25-6.01-.7-8.62-1.57c-1.57-.52-3.2.6-3.25 2.24c-.07 2.11-.42 5.07-1.55 8.59c-1.88 5.88-7.55 10.2-7.55 10.2s14.05 1.11 22.68-9.04z"
+     fill="#bdbdbd"
+     id="path18" />
+</svg>
