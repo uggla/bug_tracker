@@ -50,9 +50,9 @@ def get_bug_data():
 
     filtered_bugs = sorted(bugs, key=lambda x: x["heat"], reverse=True)[:2]
 
-    hotest_bugs = []
+    hottest_bugs = []
     for bug in filtered_bugs:
-        hotest_bugs.append(
+        hottest_bugs.append(
             {
                 "id": bug["id"],
                 "title": bug["title"],
@@ -62,7 +62,7 @@ def get_bug_data():
             }
         )
 
-    return len(tasks), latest_bugs, hotest_bugs
+    return len(tasks), latest_bugs, hottest_bugs
 
 
 def ensure_directories():
@@ -136,7 +136,7 @@ def generate_graph():
     )
 
 
-def generate_html(latest_bugs, hotest_bugs):
+def generate_html(latest_bugs, hottest_bugs):
     env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
     template = env.get_template("index.html.j2")
 
@@ -145,7 +145,7 @@ def generate_html(latest_bugs, hotest_bugs):
         graph_30d="bugs_new_30d.png",
         graph_6mo="bugs_new_6mo.png",
         latest_bugs=latest_bugs,
-        hotest_bugs=hotest_bugs,
+        hottest_bugs=hottest_bugs,
     )
     with open(HTML_FILE, "w") as f:
         f.write(html_content)
@@ -154,11 +154,11 @@ def generate_html(latest_bugs, hotest_bugs):
 def main():
     ensure_directories()
     create_rrd()
-    count, latest_bugs, hotest_bugs = get_bug_data()
+    count, latest_bugs, hottest_bugs = get_bug_data()
     print(f"New bugs for project '{PROJECT}': {count}")
     update_rrd(count)
     generate_graph()
-    generate_html(latest_bugs, hotest_bugs)
+    generate_html(latest_bugs, hottest_bugs)
     print(f"Dashboard generated: {HTML_FILE}")
 
 

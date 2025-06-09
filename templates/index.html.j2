@@ -37,8 +37,8 @@
     }
 
     .calendar {
-      width: 32px;
-      height: 32px;
+      width: 34px;
+      height: 34px;
       background-image: url('svg/calendar.svg');
       background-size: cover;
       background-position: center;
@@ -110,7 +110,7 @@
       </tbody>
     </table>
 
-    <h2>📝 Hotest New Bugs</h2>
+    <h2>🔥 Hottest New Bugs</h2>
     <table role="grid">
       <thead>
         <tr>
@@ -121,7 +121,7 @@
         </tr>
       </thead>
       <tbody>
-        {% for bug in hotest_bugs %}
+        {% for bug in hottest_bugs %}
         <tr>
           <td><a href="{{ bug.link }}" target="_blank">#{{ bug.id }}</a></td>
           <td>{{ bug.title }}</td>
