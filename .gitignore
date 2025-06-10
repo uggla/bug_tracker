@@ -11,3 +11,6 @@ wheels/
 data/*.rrd
 html/*.png
 html/*.html
+
+# Coverage
+.coverage
