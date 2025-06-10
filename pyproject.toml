@@ -8,6 +8,8 @@ dependencies = ["jinja2>=3.1.6", "launchpadlib>=2.1.0"]
 
 [dependency-groups]
 dev = [
+    "beautifulsoup4>=4.13.4",
+    "lxml>=5.4.0",
     "mypy>=1.15.0",
     "pytest>=8.3.5",
     "pytest-cov>=6.0.0",
