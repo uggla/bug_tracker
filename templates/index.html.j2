@@ -65,6 +65,20 @@
       color: #FFFFFF;
     }
 
+    .legend-box {
+      display: inline-block;
+      width: 1em;
+      height: 1em;
+      background-color: #DD91FF;
+      border: 1px solid #fff;
+      margin-right: 0.5em;
+      vertical-align: middle;
+    }
+
+    .legend-text {
+      font-size: 0.9em;
+      color: #333;
+    }
   </style>
 
 </head>
@@ -108,6 +122,10 @@
         {% endfor %}
       </tbody>
     </table>
+    <p class="legend-text">
+      <span class="legend-box"></span>
+      Bugs reported this week
+    </p>
 
     <h2>🔥 Hottest New Bugs</h2>
     <table role="grid">
@@ -130,7 +148,10 @@
         {% endfor %}
       </tbody>
     </table>
-
+    <p class="legend-text">
+      <span class="legend-box"></span>
+      Bugs reported this week
+    </p>
 
     <footer>
       <small>Generated with <code>rrdtool</code> — Styled by <a href="https://picocss.com/" target="_blank">Pico.css</a></small>
@@ -142,6 +163,38 @@
     const now = new Date();
     document.getElementById('date').textContent = String(now.getDate()).padStart(2, '0');
     document.getElementById('month').textContent = now.toLocaleString('default', { month: 'short' });
+
+    function isInCurrentWeek(dateStr) {
+      const date = new Date(dateStr);
+      const today = new Date();
+
+      // Start of the week monday (ISO)
+      const day = today.getDay(); // 0 (sun) -> 6 (sat)
+      const diffToMonday = (day === 0 ? -6 : 1 - day);
+      const monday = new Date(today);
+      monday.setDate(today.getDate() + diffToMonday);
+      monday.setHours(0, 0, 0, 0);
+
+      const sunday = new Date(monday);
+      sunday.setDate(monday.getDate() + 6);
+      sunday.setHours(23, 59, 59, 999);
+
+      return date >= monday && date <= sunday;
+    }
+
+    // Set different color to bugs from current week
+    document.querySelectorAll("table tbody tr").forEach(row => {
+      const dateCell = row.cells[2]; // 3e colonne = date
+      if (!dateCell) return;
+
+      const dateStr = dateCell.textContent.trim();
+      const parsedDate = new Date(dateStr);
+
+      if (!isNaN(parsedDate) && isInCurrentWeek(dateStr)) {
+        row.style.backgroundColor = "#DD91FF";
+      }
+    });
+
   </script>
 </body>
 </html>
