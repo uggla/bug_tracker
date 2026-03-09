@@ -1,9 +1,11 @@
+import json
 import os
 import time
 from datetime import date
 from pathlib import Path
 from bs4 import BeautifulSoup
 from bug_tracker.html import generate_html
+from bug_tracker.launchpad import _load_cache, _save_cache
 from bug_tracker import config
 
 
@@ -100,3 +102,43 @@ def test_generate_html():
     ]
 
     assertHTMLTables(config.HTML_FILE, expected_headers, expected_rows)
+
+
+FAKE_DATA = {
+    "count": 42,
+    "latest_bugs": [{"id": 1, "title": "bug1", "link": "#", "date": "2025-01-01", "heat": 10}],
+    "hottest_bugs": [{"id": 2, "title": "bug2", "link": "#", "date": "2025-01-02", "heat": 99}],
+}
+
+
+def test_cache_returns_data_when_fresh(tmp_path, monkeypatch):
+    cache_file = tmp_path / "bug_cache.json"
+    monkeypatch.setattr(config, "BUG_CACHE_FILE", str(cache_file))
+
+    _save_cache(FAKE_DATA)
+    result = _load_cache()
+
+    assert result is not None
+    assert result["count"] == 42
+    assert result["latest_bugs"][0]["id"] == 1
+    assert result["hottest_bugs"][0]["id"] == 2
+
+
+def test_cache_returns_none_when_expired(tmp_path, monkeypatch):
+    cache_file = tmp_path / "bug_cache.json"
+    monkeypatch.setattr(config, "BUG_CACHE_FILE", str(cache_file))
+
+    cache = {"timestamp": time.time() - 1300, "data": FAKE_DATA}
+    with open(cache_file, "w") as f:
+        json.dump(cache, f)
+
+    result = _load_cache()
+    assert result is None
+
+
+def test_cache_returns_none_when_no_file(tmp_path, monkeypatch):
+    cache_file = tmp_path / "bug_cache.json"
+    monkeypatch.setattr(config, "BUG_CACHE_FILE", str(cache_file))
+
+    result = _load_cache()
+    assert result is None
