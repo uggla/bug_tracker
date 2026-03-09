@@ -21,7 +21,7 @@ def _mark_current_week(bugs):
     return bugs
 
 
-def generate_html(latest_bugs, hottest_bugs):
+def generate_html(count, latest_bugs, hottest_bugs):
     env = Environment(loader=FileSystemLoader(config.TEMPLATE_DIR))
     template = env.get_template("index.html.j2")
 
@@ -37,6 +37,7 @@ def generate_html(latest_bugs, hottest_bugs):
 
     html_content = template.render(
         project=config.PROJECT,
+        count=count,
         periods=periods,
         latest_bugs=latest_bugs,
         hottest_bugs=hottest_bugs,

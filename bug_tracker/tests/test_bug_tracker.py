@@ -70,7 +70,7 @@ def test_generate_html():
         }
     ]
 
-    generate_html(fake_latest_bugs, fake_hottest_bugs)
+    generate_html(3, fake_latest_bugs, fake_hottest_bugs)
     assertRecentFile(config.HTML_DIR, "index.html")
     expected_headers = [
         "ID",
@@ -187,7 +187,7 @@ def test_current_week_bugs_have_class():
         }
     ]
 
-    generate_html(fake_latest_bugs, fake_hottest_bugs)
+    generate_html(3, fake_latest_bugs, fake_hottest_bugs)
 
     with open(config.HTML_FILE, "r", encoding="utf-8") as f:
         soup = BeautifulSoup(f, "lxml")

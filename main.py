@@ -18,7 +18,7 @@ def main():
     print(f"New bugs for project '{config.PROJECT}': {count}")
     update_rrd(count)
     generate_graph()
-    generate_html(latest_bugs, hottest_bugs)
+    generate_html(count, latest_bugs, hottest_bugs)
     print(f"Dashboard generated: {config.HTML_FILE}")
 
 
