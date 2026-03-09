@@ -28,10 +28,10 @@ def update_rrd(count):
 
 
 PERIODS = [
-    ("15d", "Last 15 Days"),
-    ("30d", "Last 30 Days"),
-    ("90d", "Last 3 Months"),
-    ("180d", "Last 6 Months"),
+    ("15d", "15 Days"),
+    ("30d", "1 Month"),
+    ("90d", "3 Months"),
+    ("180d", "6 Months"),
 ]
 
 
