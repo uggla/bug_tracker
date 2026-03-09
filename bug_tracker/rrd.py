@@ -27,45 +27,59 @@ def update_rrd(count):
     )
 
 
-def generate_graph():
-    subprocess.run(
-        [
-            "rrdtool",
-            "graph",
-            os.path.join(config.HTML_DIR, "bugs_new_30d.png"),
-            "--start",
-            "-30d",
-            "--title",
-            "New Bugs (Last 30 Days)",
-            "--vertical-label",
-            "Bugs",
-            "--width",
-            "800",
-            "--height",
-            "300",
-            f"DEF:bugs={config.RRD_FILE}:bugs:AVERAGE",
-            "LINE2:bugs#FF0000:New Bugs",
-        ],
-        check=True,
-    )
+PERIODS = [
+    ("15d", "Last 15 Days"),
+    ("30d", "Last 30 Days"),
+    ("90d", "Last 3 Months"),
+    ("180d", "Last 6 Months"),
+]
 
-    subprocess.run(
-        [
-            "rrdtool",
-            "graph",
-            os.path.join(config.HTML_DIR, "bugs_new_6mo.png"),
-            "--start",
-            "-180d",
-            "--title",
-            "New Bugs (Last 6 Months)",
-            "--vertical-label",
-            "Bugs",
-            "--width",
-            "800",
-            "--height",
-            "300",
-            f"DEF:bugs={config.RRD_FILE}:bugs:AVERAGE",
-            "LINE2:bugs#0000FF:New Bugs",
-        ],
-        check=True,
-    )
+
+def generate_graph():
+    for period, title in PERIODS:
+        subprocess.run(
+            [
+                "rrdtool",
+                "graph",
+                os.path.join(config.HTML_DIR, f"bugs_new_{period}.png"),
+                "--start",
+                f"-{period}",
+                "--title",
+                f"New Bugs ({title})",
+                "--vertical-label",
+                "Bugs",
+                "--width",
+                "800",
+                "--height",
+                "300",
+                f"DEF:bugs={config.RRD_FILE}:bugs:AVERAGE",
+                "LINE2:bugs#FF0000:New Bugs",
+            ],
+            check=True,
+        )
+
+        subprocess.run(
+            [
+                "rrdtool",
+                "graph",
+                os.path.join(config.HTML_DIR, f"bugs_delta_{period}.png"),
+                "--start",
+                f"-{period}",
+                "--title",
+                f"Daily Bug Count Change ({title})",
+                "--vertical-label",
+                "Delta",
+                "--width",
+                "800",
+                "--height",
+                "200",
+                f"DEF:bugs={config.RRD_FILE}:bugs:AVERAGE",
+                "CDEF:delta=bugs,PREV(bugs),-",
+                "CDEF:pos=delta,0,GT,delta,0,IF",
+                "CDEF:neg=delta,0,LT,delta,0,IF",
+                "AREA:pos#CC0000:Increase",
+                "AREA:neg#00AA00:Decrease",
+                "HRULE:0#000000",
+            ],
+            check=True,
+        )

@@ -6,10 +6,16 @@ def generate_html(latest_bugs, hottest_bugs):
     env = Environment(loader=FileSystemLoader(config.TEMPLATE_DIR))
     template = env.get_template("index.html.j2")
 
+    periods = [
+        {"key": "15d", "label": "15 Days"},
+        {"key": "30d", "label": "1 Month"},
+        {"key": "90d", "label": "3 Months"},
+        {"key": "180d", "label": "6 Months"},
+    ]
+
     html_content = template.render(
         project=config.PROJECT,
-        graph_30d="bugs_new_30d.png",
-        graph_6mo="bugs_new_6mo.png",
+        periods=periods,
         latest_bugs=latest_bugs,
         hottest_bugs=hottest_bugs,
     )

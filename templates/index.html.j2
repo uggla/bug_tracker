@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Launchpad new bugs for {{ project }} project</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@1.5.10/css/pico.min.css">
+  <link rel="stylesheet" href="pico.min.css">
   <style>
     :root {
       --pico-background-color: #FFDD91;
@@ -92,14 +92,25 @@
         <div class="month" id="month">---</div>
         <div class="date" id="date">--</div>
       </div>
-      <h2>
-      Last 30 Days
-      </h2>
+      <h2>Bug Trends</h2>
     </div>
-    <img src="{{ graph_30d }}" alt="New Bugs Graph (30 days)">
 
-    <h2>🕰️ Last 6 Months</h2>
-    <img src="{{ graph_6mo }}" alt="New Bugs Graph (6 months)">
+    <details class="dropdown">
+      <summary role="button">1 Month</summary>
+      <ul>
+        {% for p in periods %}
+        <li><a href="#" data-period="{{ p.key }}">{{ p.label }}</a></li>
+        {% endfor %}
+      </ul>
+    </details>
+
+    {% for p in periods %}
+    <div class="period-graphs" id="graphs-{{ p.key }}" style="{% if p.key != '30d' %}display:none{% endif %}">
+      <img src="bugs_new_{{ p.key }}.png" alt="New Bugs Graph ({{ p.label }})">
+      <h3 style="margin-top: 2rem;">📊 Daily Change</h3>
+      <img src="bugs_delta_{{ p.key }}.png" alt="Daily Bug Count Change ({{ p.label }})">
+    </div>
+    {% endfor %}
 
     <h2>📝 Latest New Bugs</h2>
     <table role="grid">
@@ -181,6 +192,19 @@
 
       return date >= monday && date <= sunday;
     }
+
+    // Period dropdown toggle
+    document.querySelectorAll("[data-period]").forEach(link => {
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        const period = link.dataset.period;
+        document.querySelectorAll(".period-graphs").forEach(g => g.style.display = "none");
+        document.getElementById("graphs-" + period).style.display = "block";
+        const dropdown = link.closest("details");
+        dropdown.querySelector("summary").textContent = link.textContent;
+        dropdown.removeAttribute("open");
+      });
+    });
 
     // Set different color to bugs from current week
     document.querySelectorAll("table tbody tr").forEach(row => {
