@@ -1,10 +1,10 @@
 import json
 import os
 import time
-from datetime import date
+from datetime import date, timedelta
 from pathlib import Path
 from bs4 import BeautifulSoup
-from bug_tracker.html import generate_html, is_current_week
+from bug_tracker.html import generate_html, is_less_than_one_week
 from bug_tracker.launchpad import _load_cache, _save_cache
 from bug_tracker import config
 
@@ -144,12 +144,17 @@ def test_cache_returns_none_when_no_file(tmp_path, monkeypatch):
     assert result is None
 
 
-def test_is_current_week_today():
-    assert is_current_week(date.today().isoformat()) is True
+def test_is_less_than_one_week_today():
+    assert is_less_than_one_week(date.today().isoformat()) is True
 
 
-def test_is_current_week_old_date():
-    assert is_current_week("2020-01-01") is False
+def test_is_less_than_one_week_3_days_ago():
+    three_days_ago = (date.today() - timedelta(days=3)).isoformat()
+    assert is_less_than_one_week(three_days_ago) is True
+
+
+def test_is_less_than_one_week_old_date():
+    assert is_less_than_one_week("2020-01-01") is False
 
 
 def test_current_week_bugs_have_class():

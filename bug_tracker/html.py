@@ -4,20 +4,19 @@ from bug_tracker import config
 from jinja2 import Environment, FileSystemLoader
 
 
-def is_current_week(date_str):
+def is_less_than_one_week(date_str):
     today = date.today()
-    monday = today - timedelta(days=today.weekday())
-    sunday = monday + timedelta(days=6)
+    one_week_ago = today - timedelta(days=7)
     try:
         d = date.fromisoformat(date_str)
     except (ValueError, TypeError):
         return False
-    return monday <= d <= sunday
+    return d > one_week_ago
 
 
 def _mark_current_week(bugs):
     for bug in bugs:
-        bug["is_current_week"] = is_current_week(bug.get("date", ""))
+        bug["is_current_week"] = is_less_than_one_week(bug.get("date", ""))
     return bugs
 
 
