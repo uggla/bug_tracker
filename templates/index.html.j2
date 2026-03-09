@@ -65,6 +65,10 @@
       color: #FFFFFF;
     }
 
+    tr.current-week td {
+      background-color: #DD91FF !important;
+    }
+
     .legend-box {
       display: inline-block;
       width: 1em;
@@ -124,7 +128,7 @@
       </thead>
       <tbody>
         {% for bug in latest_bugs %}
-        <tr>
+        <tr{% if bug.is_current_week %} class="current-week"{% endif %}>
           <td><a href="{{ bug.link }}" target="_blank">#{{ bug.id }}</a></td>
           <td>{{ bug.title }}</td>
           <td>{{ bug.date }}</td>
@@ -150,7 +154,7 @@
       </thead>
       <tbody>
         {% for bug in hottest_bugs %}
-        <tr>
+        <tr{% if bug.is_current_week %} class="current-week"{% endif %}>
           <td><a href="{{ bug.link }}" target="_blank">#{{ bug.id }}</a></td>
           <td>{{ bug.title }}</td>
           <td>{{ bug.date }}</td>
@@ -175,24 +179,6 @@
     document.getElementById('date').textContent = String(now.getDate()).padStart(2, '0');
     document.getElementById('month').textContent = now.toLocaleString('default', { month: 'short' });
 
-    function isInCurrentWeek(dateStr) {
-      const date = new Date(dateStr);
-      const today = new Date();
-
-      // Start of the week monday (ISO)
-      const day = today.getDay(); // 0 (sun) -> 6 (sat)
-      const diffToMonday = (day === 0 ? -6 : 1 - day);
-      const monday = new Date(today);
-      monday.setDate(today.getDate() + diffToMonday);
-      monday.setHours(0, 0, 0, 0);
-
-      const sunday = new Date(monday);
-      sunday.setDate(monday.getDate() + 6);
-      sunday.setHours(23, 59, 59, 999);
-
-      return date >= monday && date <= sunday;
-    }
-
     // Period dropdown toggle
     document.querySelectorAll("[data-period]").forEach(link => {
       link.addEventListener("click", (e) => {
@@ -204,19 +190,6 @@
         dropdown.querySelector("summary").textContent = link.textContent;
         dropdown.removeAttribute("open");
       });
-    });
-
-    // Set different color to bugs from current week
-    document.querySelectorAll("table tbody tr").forEach(row => {
-      const dateCell = row.cells[2]; // 3e colonne = date
-      if (!dateCell) return;
-
-      const dateStr = dateCell.textContent.trim();
-      const parsedDate = new Date(dateStr);
-
-      if (!isNaN(parsedDate) && isInCurrentWeek(dateStr)) {
-        row.style.backgroundColor = "#DD91FF";
-      }
     });
 
   </script>
