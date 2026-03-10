@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <title>Launchpad new bugs for {{ project }} project</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Monitoring dashboard for new bugs submitted in the {{ project }} project on Launchpad.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="stylesheet" href="pico.min.css">
   <style>
     :root {
@@ -66,14 +68,14 @@
     }
 
     tr.current-week td {
-      background-color: #DD91FF !important;
+      background-color: #ECC8FF !important;
     }
 
     .legend-box {
       display: inline-block;
       width: 1em;
       height: 1em;
-      background-color: #DD91FF;
+      background-color: #ECC8FF;
       border: 1px solid #fff;
       margin-right: 0.5em;
       vertical-align: middle;
@@ -111,9 +113,9 @@
 
     {% for p in periods %}
     <div class="period-graphs" id="graphs-{{ p.key }}" style="{% if p.key != '30d' %}display:none{% endif %}">
-      <img src="bugs_new_{{ p.key }}.png" alt="New Bugs Graph ({{ p.label }})">
+      <img src="bugs_new_{{ p.key }}.png" alt="New Bugs Graph ({{ p.label }})" width="897" height="368"{% if p.key == '30d' %} fetchpriority="high"{% endif %}>
       <h3 style="margin-top: 2rem;">📊 Daily Change</h3>
-      <img src="bugs_delta_{{ p.key }}.png" alt="Daily Bug Count Change ({{ p.label }})">
+      <img src="bugs_delta_{{ p.key }}.png" alt="Daily Bug Count Change ({{ p.label }})" width="897" height="268">
     </div>
     {% endfor %}
 
