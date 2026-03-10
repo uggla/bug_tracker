@@ -232,3 +232,5 @@ def test_generate_graph_outputs_svg(monkeypatch, tmp_path):
     assert all(path.endswith(".svg") for path in output_files)
     assert any(path.endswith("bugs_new_30d.svg") for path in output_files)
     assert any(path.endswith("bugs_delta_30d.svg") for path in output_files)
+    assert all("--imgformat" in cmd for cmd, _ in commands)
+    assert all("SVG" in cmd for cmd, _ in commands)
