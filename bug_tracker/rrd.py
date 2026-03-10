@@ -41,7 +41,7 @@ def generate_graph():
             [
                 "rrdtool",
                 "graph",
-                os.path.join(config.HTML_DIR, f"bugs_new_{period}.png"),
+                os.path.join(config.HTML_DIR, f"bugs_new_{period}.svg"),
                 "--start",
                 f"-{period}",
                 "--title",
@@ -62,7 +62,7 @@ def generate_graph():
             [
                 "rrdtool",
                 "graph",
-                os.path.join(config.HTML_DIR, f"bugs_delta_{period}.png"),
+                os.path.join(config.HTML_DIR, f"bugs_delta_{period}.svg"),
                 "--start",
                 f"-{period}",
                 "--title",

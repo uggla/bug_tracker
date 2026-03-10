@@ -2,7 +2,7 @@
 
 This project tracks the number of **"New" bugs** for a Launchpad project (e.g., `nova`) and stores the count daily in a **Round-Robin Database (RRD)**. It then:
 
-- Generates a **PNG graph** of the last 30 days
+- Generates **SVG graphs** of the last 30 days
 - Creates a simple **HTML dashboard** to view the graph
 
 ---

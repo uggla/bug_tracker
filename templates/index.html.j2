@@ -113,9 +113,9 @@
 
     {% for p in periods %}
     <div class="period-graphs" id="graphs-{{ p.key }}" style="{% if p.key != '30d' %}display:none{% endif %}">
-      <img src="bugs_new_{{ p.key }}.png" alt="New Bugs Graph ({{ p.label }})" width="897" height="368"{% if p.key == '30d' %} fetchpriority="high"{% endif %}>
+      <img src="bugs_new_{{ p.key }}.svg" alt="New Bugs Graph ({{ p.label }})" width="897" height="368"{% if p.key == '30d' %} fetchpriority="high"{% endif %}>
       <h3 style="margin-top: 2rem;">📊 Daily Change</h3>
-      <img src="bugs_delta_{{ p.key }}.png" alt="Daily Bug Count Change ({{ p.label }})" width="897" height="268">
+      <img src="bugs_delta_{{ p.key }}.svg" alt="Daily Bug Count Change ({{ p.label }})" width="897" height="268">
     </div>
     {% endfor %}
 

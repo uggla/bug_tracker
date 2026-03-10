@@ -6,6 +6,7 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 from bug_tracker.html import generate_html, is_less_than_one_week
 from bug_tracker.launchpad import _load_cache, _save_cache
+from bug_tracker.rrd import PERIODS, generate_graph
 from bug_tracker import config
 
 
@@ -102,6 +103,12 @@ def test_generate_html():
     ]
 
     assertHTMLTables(config.HTML_FILE, expected_headers, expected_rows)
+
+    with open(config.HTML_FILE, "r", encoding="utf-8") as f:
+        html = f.read()
+
+    assert "bugs_new_30d.svg" in html
+    assert "bugs_delta_30d.svg" in html
 
 
 FAKE_DATA = {
@@ -204,3 +211,24 @@ def test_current_week_bugs_have_class():
     assert "current-week" not in rows[1].get("class", [])
     assert "current-week" not in rows[2].get("class", [])
     assert "current-week" not in rows[3].get("class", [])
+
+
+def test_generate_graph_outputs_svg(monkeypatch, tmp_path):
+    commands = []
+
+    def fake_run(cmd, check):
+        commands.append((cmd, check))
+
+    monkeypatch.setattr(config, "HTML_DIR", str(tmp_path))
+    monkeypatch.setattr(config, "RRD_FILE", str(tmp_path / "bugs_new.rrd"))
+    monkeypatch.setattr("bug_tracker.rrd.subprocess.run", fake_run)
+
+    generate_graph()
+
+    assert len(commands) == len(PERIODS) * 2
+
+    output_files = [cmd[2] for cmd, check in commands]
+    assert all(check is True for _, check in commands)
+    assert all(path.endswith(".svg") for path in output_files)
+    assert any(path.endswith("bugs_new_30d.svg") for path in output_files)
+    assert any(path.endswith("bugs_delta_30d.svg") for path in output_files)
