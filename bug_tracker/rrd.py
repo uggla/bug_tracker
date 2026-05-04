@@ -4,8 +4,35 @@ import subprocess
 from bug_tracker import config
 
 
+def ensure_rrd_heartbeat():
+    if not os.path.exists(config.RRD_FILE):
+        return
+
+    result = subprocess.run(
+        ["rrdtool", "info", config.RRD_FILE],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    expected = f'ds[bugs].minimal_heartbeat = {config.RRD_HEARTBEAT}'
+    if expected in result.stdout:
+        return
+
+    subprocess.run(
+        [
+            "rrdtool",
+            "tune",
+            config.RRD_FILE,
+            "--heartbeat",
+            f"bugs:{config.RRD_HEARTBEAT}",
+        ],
+        check=True,
+    )
+
+
 def create_rrd():
     if os.path.exists(config.RRD_FILE):
+        ensure_rrd_heartbeat()
         return
     subprocess.run(
         [
@@ -14,7 +41,7 @@ def create_rrd():
             config.RRD_FILE,
             "--step",
             "3600",
-            "DS:bugs:GAUGE:172800:0:10000",
+            f"DS:bugs:GAUGE:{config.RRD_HEARTBEAT}:0:10000",
             "RRA:AVERAGE:0.5:1:8760",
         ],
         check=True,

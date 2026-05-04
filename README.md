@@ -28,3 +28,27 @@ Make sure `rrdtool` is available on your system:
 # On Debian/Ubuntu
 sudo apt install rrdtool
 ```
+
+## Repair a damaged RRD
+
+If a full filesystem or a long outage caused `NaN` gaps in `data/bugs_new.rrd`,
+you can rebuild the file by forward-filling missing values from the last known
+sample and increase the heartbeat:
+
+```bash
+uv run python -m bug_tracker.rrd_repair data/bugs_new.rrd --heartbeat 172800
+```
+
+This command writes a backup copy next to the original RRD before replacing it.
+
+If you want a better reconstruction than a simple forward-fill, you can
+rebuild missing rows from Launchpad task dates:
+
+```bash
+uv run python -m bug_tracker.rrd_backfill data/bugs_new.rrd --start 1776819600 --end 1777914009 --heartbeat 172800
+```
+
+This backfill uses Launchpad task dates such as creation time and the date a
+task left the `New` status. It is more faithful than forward-filling, but it
+remains a best-effort reconstruction for bugs that were reopened multiple
+times during the missing window.

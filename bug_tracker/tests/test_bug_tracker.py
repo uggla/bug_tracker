@@ -3,11 +3,19 @@ import os
 import time
 from datetime import date, timedelta
 from pathlib import Path
+from types import SimpleNamespace
 from bs4 import BeautifulSoup
 from bug_tracker.html import generate_html, is_less_than_one_week
 from bug_tracker.launchpad import _load_cache, _save_cache
+from bug_tracker.rrd_backfill import (
+    rebuild_missing_rows,
+    replace_rows_in_dump,
+    task_to_events,
+)
 from bug_tracker.rrd import PERIODS, generate_graph
+from bug_tracker.rrd_repair import fill_missing_rows, set_heartbeat
 from bug_tracker import config
+import xml.etree.ElementTree as ET
 
 
 def assertRecentFile(path, filetype):
@@ -234,3 +242,108 @@ def test_generate_graph_outputs_svg(monkeypatch, tmp_path):
     assert any(path.endswith("bugs_delta_30d.svg") for path in output_files)
     assert all("--imgformat" in cmd for cmd, _ in commands)
     assert all("SVG" in cmd for cmd, _ in commands)
+
+
+def test_fill_missing_rows_forward_fills_internal_nan_values():
+    root = ET.fromstring(
+        """
+        <rrd>
+          <rra>
+            <database>
+              <row><v>NaN</v></row>
+              <row><v>1.9200000000e+02</v></row>
+              <row><v>NaN</v></row>
+              <row><v>NaN</v></row>
+              <row><v>2.0100000000e+02</v></row>
+            </database>
+          </rra>
+        </rrd>
+        """
+    )
+
+    filled = fill_missing_rows(root)
+    values = [node.text for node in root.findall("./rra/database/row/v")]
+
+    assert filled == 2
+    assert values == [
+        "NaN",
+        "1.9200000000e+02",
+        "1.9200000000e+02",
+        "1.9200000000e+02",
+        "2.0100000000e+02",
+    ]
+
+
+def test_set_heartbeat_updates_rrd_metadata():
+    root = ET.fromstring(
+        """
+        <rrd>
+          <ds>
+            <minimal_heartbeat>172800</minimal_heartbeat>
+          </ds>
+        </rrd>
+        """
+    )
+
+    set_heartbeat(root, 1209600)
+
+    assert root.findtext("./ds/minimal_heartbeat") == "1209600"
+
+
+def test_task_to_events_uses_launchpad_dates():
+    task = SimpleNamespace(
+        date_created="2026-04-22T10:15:00+00:00",
+        date_left_new="2026-04-24T09:00:00+00:00",
+        date_left_closed=None,
+        status="Confirmed",
+    )
+
+    events = task_to_events(task, 1776800000, 1777000000)
+
+    assert [(event.ts, event.delta) for event in events] == [
+        (1776852900, 1),
+        (1777021200, -1),
+    ]
+
+
+def test_rebuild_missing_rows_applies_reverse_events():
+    rows = [
+        (200, None),
+        (300, None),
+        (400, 10.0),
+    ]
+    events = [
+        SimpleNamespace(ts=250, delta=1),
+        SimpleNamespace(ts=350, delta=-1),
+    ]
+
+    rebuilt = rebuild_missing_rows(rows, events, anchor_count=10, step=100)
+
+    assert rebuilt == {
+        400: 10.0,
+        300: 10.0,
+        200: 11.0,
+    }
+
+
+def test_replace_rows_in_dump_updates_selected_timestamps_and_heartbeat():
+    dump = """
+<rrd>
+  <ds><minimal_heartbeat>172800</minimal_heartbeat></ds>
+  <rra><database>
+    <!-- 2026-04-22 04:00:00 CEST / 1776823200 --> <row><v>NaN</v></row>
+    <!-- 2026-04-22 05:00:00 CEST / 1776826800 --> <row><v>NaN</v></row>
+  </database></rra>
+</rrd>
+"""
+
+    updated, replaced = replace_rows_in_dump(
+        dump,
+        {1776823200: 183.0, 1776826800: 184.0},
+        heartbeat=172800,
+    )
+
+    assert replaced == 2
+    assert "1.8300000000e+02" in updated
+    assert "1.8400000000e+02" in updated
+    assert "<minimal_heartbeat>172800</minimal_heartbeat>" in updated
